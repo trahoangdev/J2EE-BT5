@@ -1,11 +1,18 @@
 package com.example.demo.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Tên sản phẩm không được để trống")
+    @Column(nullable = false)
     private String name;
 
     @NotNull(message = "Giá sản phẩm không được để trống")
@@ -14,15 +21,17 @@ public class Product {
     private Double price;
 
     @Size(max = 200, message = "Tên hình ảnh không quá 200 ký tự")
+    @Column(length = 200)
     private String image;
 
-    @NotBlank(message = "Vui lòng chọn danh mục")
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public Product() {
     }
 
-    public Product(Long id, String name, Double price, String image, String category) {
+    public Product(Long id, String name, Double price, String image, Category category) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -62,11 +71,11 @@ public class Product {
         this.image = image;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -77,7 +86,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", image='" + image + '\'' +
-                ", category='" + category + '\'' +
+                ", category=" + category +
                 '}';
     }
 }

@@ -39,7 +39,7 @@ public class ProductWebController {
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", productService.getCategories());
+        model.addAttribute("categories", productService.getAllCategories());
         model.addAttribute("mode", "create");
         return "products/form";
     }
@@ -61,7 +61,7 @@ public class ProductWebController {
         }
 
         if (result.hasErrors()) {
-            model.addAttribute("categories", productService.getCategories());
+            model.addAttribute("categories", productService.getAllCategories());
             model.addAttribute("mode", "create");
             return "products/form";
         }
@@ -80,14 +80,12 @@ public class ProductWebController {
     // Form sửa sản phẩm
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
-        Product product = productService.getProductById(id);
-        if (product == null) {
-            return "redirect:/products";
-        }
-        model.addAttribute("product", product);
-        model.addAttribute("categories", productService.getCategories());
-        model.addAttribute("mode", "edit");
-        return "products/form";
+        return productService.getProductById(id).map(product -> {
+            model.addAttribute("product", product);
+            model.addAttribute("categories", productService.getAllCategories());
+            model.addAttribute("mode", "edit");
+            return "products/form";
+        }).orElse("redirect:/products");
     }
 
     // Xử lý cập nhật sản phẩm
@@ -108,7 +106,7 @@ public class ProductWebController {
         }
 
         if (result.hasErrors()) {
-            model.addAttribute("categories", productService.getCategories());
+            model.addAttribute("categories", productService.getAllCategories());
             model.addAttribute("mode", "edit");
             return "products/form";
         }
