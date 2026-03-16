@@ -1,15 +1,17 @@
  package com.example.demo.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.security.Principal;
 
-@Controller
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
 public class HomeController {
     
     @GetMapping("/home")
-    public String home(Model model) {
-        model.addAttribute("message", "Hello World");
-        return "home";
+    @ResponseBody
+    public String home(Principal principal) {
+        return "Hello, " + principal.getName();
     }
 }
